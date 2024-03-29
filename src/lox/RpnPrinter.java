@@ -2,6 +2,7 @@ package lox;
 
 import java.util.Stack;
 
+/*
 public class RpnPrinter implements  Expr.Visitor<String> {
 
     public static void main(String[] args) {
@@ -59,3 +60,4 @@ public class RpnPrinter implements  Expr.Visitor<String> {
         return builder.toString();
     }
 }
+*/

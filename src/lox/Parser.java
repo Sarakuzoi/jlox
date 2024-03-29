@@ -22,7 +22,20 @@ public class Parser {
     }
 
     private Expr expression() {
-        return equality();
+        return ternary();
+    }
+
+    private Expr ternary() {
+        Expr expr = equality();
+
+        while (match(QUESTION_MARK)) {
+            Token first = previous();
+            Expr middle = expression();
+            Token second = consume(COLON, "Expect ':' in ternary expression");
+            Expr right = expression();
+            expr = new Expr.Ternary(expr, first, middle, second, right);
+        }
+        return expr;
     }
 
     private Expr equality() {
