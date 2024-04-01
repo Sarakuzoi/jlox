@@ -22,6 +22,10 @@ public class Parser {
     }
 
     private Expr expression() {
+        if (match(COLON)) {
+            throw error(previous(), "Expect ternary operator when using ':'");
+        }
+
         return ternary();
     }
 
