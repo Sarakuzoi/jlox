@@ -115,6 +115,12 @@ public class Parser {
             return new Expr.Grouping(expr);
         }
 
+        if (match(BANG_EQUAL, EQUAL_EQUAL, PLUS, MINUS, STAR, SLASH, GREATER, GREATER_EQUAL, LESS, LESS_EQUAL)) {
+            Token prev = previous();
+            expression();
+            throw error(prev, "Expect an expression before binary operator");
+        }
+
         throw error(peek(), "Expect expression.");
     }
 
