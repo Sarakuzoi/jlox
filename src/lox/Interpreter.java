@@ -2,6 +2,15 @@ package lox;
 
 public class Interpreter implements Expr.Visitor<Object> {
 
+    void interpret(Expr expression) {
+        try {
+            Object value = evaluate(expression);
+            System.out.println(stringify(value));
+        } catch (RuntimeError error) {
+            Lox.runtimeError(error);
+        }
+    }
+
     @Override
     public Object visitBinaryExpr(Expr.Binary expr) {
         Object left = evaluate(expr.left);
@@ -101,5 +110,19 @@ public class Interpreter implements Expr.Visitor<Object> {
     private void checkNumberOperand(Token operator, Object left, Object right) {
         if (left instanceof Double && right instanceof Double) return;
         throw new RuntimeError(operator, "Operands must be numbers");
+    }
+
+    public String stringify(Object o) {
+        if (o == null) return "nil";
+
+        if (o instanceof Double) {
+            String text = o.toString();
+            if (text.endsWith(".0")) {
+                text = text.substring(0, text.length() - 2);
+            }
+            return  text;
+        }
+
+        return o.toString();
     }
 }
