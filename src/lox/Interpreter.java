@@ -36,17 +36,41 @@ public class Interpreter implements Expr.Visitor<Object> {
                 throw new RuntimeError(expr.operator,
                         "Operands must be two numbers or two strings.");
             case GREATER:
-                checkNumberOperand(expr.operator, left, right);
-                return (double)left > (double)right;
+                if (left instanceof Double && right instanceof Double) {
+                    return (double)left > (double)right;
+                }
+                if (left instanceof String && right instanceof String) {
+                    return ((String) left).compareTo((String) right) > 0;
+                }
+                throw new RuntimeError(expr.operator,
+                        "Operands must be two numbers or two strings.");
             case GREATER_EQUAL:
-                checkNumberOperand(expr.operator, left, right);
-                return (double)left >= (double)right;
+                if (left instanceof Double && right instanceof Double) {
+                    return (double)left >= (double)right;
+                }
+                if (left instanceof String && right instanceof String) {
+                    return ((String) left).compareTo((String) right) >= 0;
+                }
+                throw new RuntimeError(expr.operator,
+                        "Operands must be two numbers or two strings.");
             case LESS:
-                checkNumberOperand(expr.operator, left, right);
-                return (double)left < (double)right;
+                if (left instanceof Double && right instanceof Double) {
+                    return (double)left < (double)right;
+                }
+                if (left instanceof String && right instanceof String) {
+                    return ((String) left).compareTo((String) right) < 0;
+                }
+                throw new RuntimeError(expr.operator,
+                        "Operands must be two numbers or two strings.");
             case LESS_EQUAL:
-                checkNumberOperand(expr.operator, left, right);
-                return (double)left <= (double)right;
+                if (left instanceof Double && right instanceof Double) {
+                    return (double)left <= (double)right;
+                }
+                if (left instanceof String && right instanceof String) {
+                    return ((String) left).compareTo((String) right) <= 0;
+                }
+                throw new RuntimeError(expr.operator,
+                        "Operands must be two numbers or two strings.");
             case BANG_EQUAL: return !isEqual(left, right);
             case EQUAL_EQUAL: return isEqual(left, right);
         }
@@ -109,6 +133,12 @@ public class Interpreter implements Expr.Visitor<Object> {
 
     private void checkNumberOperand(Token operator, Object left, Object right) {
         if (left instanceof Double && right instanceof Double) return;
+        throw new RuntimeError(operator, "Operands must be numbers");
+    }
+
+    private void checkNumberXorStringOperands(Token operator, Object left, Object right) {
+        if (left instanceof Double && right instanceof Double) return;
+        if (left instanceof String && right instanceof String) return;
         throw new RuntimeError(operator, "Operands must be numbers");
     }
 
