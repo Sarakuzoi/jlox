@@ -30,8 +30,21 @@ public class Interpreter implements Expr.Visitor<Object> {
                 if (left instanceof Double && right instanceof Double) {
                     return (double)left + (double)right;
                 }
-                if (left instanceof String && right instanceof String) {
-                    return (String)left + (String)right;
+                if (left instanceof String) {
+                    if (right instanceof String || right instanceof Boolean || (right instanceof Double && (Double)right != ((Double) right).intValue()))
+                        return (String)left + right;
+                    if (right instanceof Double)
+                        return (String)left + ((Double) right).intValue();
+                    throw new RuntimeError(expr.operator,
+                            "Operands must be string-convertable.");
+                }
+                if (right instanceof String) {
+                    if (left instanceof Boolean || (left instanceof Double && (Double)left != ((Double) left).intValue()))
+                        return left + (String)right;
+                    if (left instanceof Double)
+                        return (String)right + ((Double) left).intValue();
+                    throw new RuntimeError(expr.operator,
+                            "Operands must be string-convertable.");
                 }
                 throw new RuntimeError(expr.operator,
                         "Operands must be two numbers or two strings.");
