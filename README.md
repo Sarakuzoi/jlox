@@ -9,9 +9,9 @@ The code expands on the features of jlox, from [Crafting Interpreters](https://c
 ## Roadmap 📝
 
 -   [x] Scanner
--   [ ] Representing Code
--   [ ] Parser
--   [ ] Evaluating Expressions
+-   [x] Representing Code
+-   [x] Parser
+-   [x] Evaluating Expressions
 -   [ ] State and Statements
 -   [ ] Control Flow
 -   [ ] Function Support
