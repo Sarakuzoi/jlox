@@ -8,6 +8,7 @@ abstract class Expr {
     R visitGroupingExpr(Grouping expr);
     R visitLiteralExpr(Literal expr);
     R visitUnaryExpr(Unary expr);
+    R visitVariableExpr(Variable expr);
     R visitTernaryExpr(Ternary expr);
   }
     static class Binary extends Expr {
@@ -63,6 +64,18 @@ abstract class Expr {
 
     final Token operator;
     final Expr right;
+  }
+    static class Variable extends Expr {
+    Variable(Token name) {
+      this.name = name;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitVariableExpr(this);
+    }
+
+    final Token name;
   }
     static class Ternary extends Expr {
     Ternary(Expr left, Token first, Expr middle, Token second, Expr right) {
