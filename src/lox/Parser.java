@@ -64,12 +64,32 @@ public class Parser {
         return new Stmt.Expression(expr);
     }
 
-    private Expr expression() {
-        if (match(COLON)) {
-            throw error(previous(), "Expect ternary operator when using ':'");
+    private Expr assignment() {
+        Expr expr = equality();
+
+        if (match(EQUAL)) {
+            Token equals = previous();
+            Expr value = assignment();
+
+            if (expr instanceof Expr.Variable) {
+                Token name = ((Expr.Variable)expr).name;
+                return new Expr.Assign(name, value);
+            }
+
+            error(equals, "Invalid assignment target.");
         }
 
-        return ternary();
+        return expr;
+    }
+
+
+    private Expr expression() {
+        return assignment();
+//        if (match(COLON)) {
+//            throw error(previous(), "Expect ternary operator when using ':'");
+//        }
+//
+//        return ternary();
     }
 
     private Expr ternary() {
