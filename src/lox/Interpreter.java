@@ -11,6 +11,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     private Environment environment = new Environment();
+    private boolean repl = false;
 
     void interpret(List<Stmt> statements) {
         try {
@@ -22,8 +23,16 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         }
     }
 
+    void interpret(List<Stmt> statements, boolean repl) {
+        this.repl = repl;
+        interpret(statements);
+    }
+
     private void execute (Stmt stmt) {
         stmt.accept(this);
+        if (stmt instanceof Stmt.Expression expr) {
+            System.out.println(stringify(expr.expression.accept(this)));
+        }
     }
 
     void executeBlock(List<Stmt> statements,
