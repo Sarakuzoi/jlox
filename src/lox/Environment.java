@@ -2,6 +2,7 @@ package lox;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Environment {
     final Environment enclosing;
@@ -18,6 +19,11 @@ public class Environment {
 
     Object get(Token name) {
         if (values.containsKey(name.lexeme)) {
+            Object val = values.get(name.lexeme);
+            if (val instanceof Optional<?> && ((Optional<Object>)val).isEmpty()) {
+                throw new RuntimeError(name,
+                        "Uninitialized variable '" + name.lexeme + "'.");
+            }
             return values.get(name.lexeme);
         }
 

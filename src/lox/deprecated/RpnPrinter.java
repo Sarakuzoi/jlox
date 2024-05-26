@@ -1,4 +1,4 @@
-package lox;
+package lox.deprecated;
 
 import java.util.Stack;
 

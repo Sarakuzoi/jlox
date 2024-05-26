@@ -1,6 +1,7 @@
 package lox;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
@@ -29,10 +30,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     private void execute (Stmt stmt) {
-        stmt.accept(this);
-        if (stmt instanceof Stmt.Expression expr) {
+        if (repl && stmt instanceof Stmt.Expression expr) {
             System.out.println(stringify(expr.expression.accept(this)));
+            return;
         }
+        stmt.accept(this);
     }
 
     void executeBlock(List<Stmt> statements,
@@ -178,7 +180,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitVarStmt(Stmt.Var stmt) {
-        Object value = null;
+        Object value = Optional.empty();
         if (stmt.initializer != null) {
             value = evaluate(stmt.initializer);
         }
