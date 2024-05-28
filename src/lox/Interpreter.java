@@ -70,6 +70,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
             case STAR:
                 checkNumberOperand(expr.operator, left, right);
                 return (double)left * (double)right;
+            case MODULO:
+                checkNumberOperand(expr.operator, left, right);
+                if ((Double)right == 0d)
+                    throw new RuntimeError(expr.operator,
+                            "Attempt to divide by 0");
+                return (double)left % (double)right;
             case PLUS:
                 if (left instanceof Double && right instanceof Double) {
                     return (double)left + (double)right;
