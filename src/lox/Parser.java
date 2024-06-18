@@ -11,6 +11,7 @@ public class Parser {
     private final List<Token> tokens;
     private int current = 0;
     private int loopDepth = 0;
+    private boolean forLoop = false;
 
     Parser(List<Token> tokens) {
         this.tokens = tokens;
@@ -59,10 +60,8 @@ public class Parser {
         return expressionStatement();
     }
 
-    // TODO: Add parser counter for loop depth
     private Stmt breakStatement() {
         if (loopDepth == 0) {
-            //TODO: Add custom error
            error(previous(), "Break statements must be used within loops.");
         }
         consume(SEMICOLON, "Expect ';' after 'break'.");
