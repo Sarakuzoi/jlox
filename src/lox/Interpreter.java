@@ -5,6 +5,8 @@ import java.util.Optional;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
+    private static class BreakException extends RuntimeException {
+    }
     @Override
     public Void visitBlockStmt(Stmt.Block stmt) {
         executeBlock(stmt.statements, new Environment(environment));
@@ -209,15 +211,19 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     @Override
     public Void visitWhileStmt(Stmt.While stmt) {
-        while (isTruthy(evaluate(stmt.condition))) {
-            execute(stmt.body);
+        try {
+            while (isTruthy(evaluate(stmt.condition))) {
+                execute(stmt.body);
+            }
+        } catch (BreakException ex) {
+            // Do Nothing
         }
         return null;
     }
 
     @Override
     public Void visitBreakStmt(Stmt.Break stmt) {
-        return null;
+        throw new BreakException();
     }
 
     @Override

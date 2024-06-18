@@ -62,7 +62,8 @@ public class Parser {
     // TODO: Add parser counter for loop depth
     private Stmt breakStatement() {
         if (loopDepth == 0) {
-            throw error(previous(), "Break statements must be used within loops.");
+            //TODO: Add custom error
+           error(previous(), "Break statements must be used within loops.");
         }
         consume(SEMICOLON, "Expect ';' after 'break'.");
         return new Stmt.Break();
