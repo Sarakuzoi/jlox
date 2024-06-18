@@ -3,6 +3,8 @@ package lox;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
+
 import static lox.TokenType.*;
 
 public class Parser {
@@ -10,8 +12,9 @@ public class Parser {
     private static class ParseError extends RuntimeException {}
     private final List<Token> tokens;
     private int current = 0;
-    private int loopDepth = 0;
-    private boolean forLoop = false;
+    private Stack<Expr> forIncrement = new Stack<>();
+    // True if for loop, False if while
+    private Stack<Boolean> loopDepth = new Stack<>();
 
     Parser(List<Token> tokens) {
         this.tokens = tokens;
@@ -51,6 +54,7 @@ public class Parser {
 
     private Stmt statement() {
         if (match(BREAK)) return breakStatement();
+        if (match(CONTINUE)) return continueStatement();
         if (match(FOR)) return forStatement();
         if (match(IF)) return ifStatement();
         if (match(LEFT_BRACE)) return new Stmt.Block(block());
@@ -61,11 +65,20 @@ public class Parser {
     }
 
     private Stmt breakStatement() {
-        if (loopDepth == 0) {
+        System.out.println(loopDepth);
+        if (loopDepth.isEmpty()) {
            error(previous(), "Break statements must be used within loops.");
         }
         consume(SEMICOLON, "Expect ';' after 'break'.");
         return new Stmt.Break();
+    }
+
+    private Stmt continueStatement() {
+        if (loopDepth.isEmpty()) {
+            error(previous(), "Continue statements must be used within loops.");
+        }
+        consume(SEMICOLON, "Expect ';' after 'continue'.");
+        return new Stmt.Continue(loopDepth.peek() ? forIncrement.peek() : null);
     }
 
     private Stmt forStatement() {
@@ -93,7 +106,8 @@ public class Parser {
         consume(RIGHT_PAREN, "Expect ')' after for clauses");
 
         try {
-            loopDepth ++;
+            loopDepth.add(true);
+            forIncrement.add(increment);
             Stmt body = statement();
 
             if (increment != null) {
@@ -111,7 +125,8 @@ public class Parser {
             }
             return body;
         } finally {
-            loopDepth --;
+            forIncrement.pop();
+            loopDepth.pop();
         }
     }
 
@@ -140,11 +155,11 @@ public class Parser {
         Expr condition = expression();
         consume(RIGHT_PAREN, "Expect ')' after condition.");
         try {
-            loopDepth++;
+            loopDepth.add(false);
             Stmt body = statement();
             return new Stmt.While(condition, body);
         } finally {
-            loopDepth--;
+            loopDepth.pop();
         }
 
     }

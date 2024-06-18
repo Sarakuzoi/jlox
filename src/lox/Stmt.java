@@ -36,7 +36,7 @@ abstract class Stmt {
 
   }
     static class Continue extends Stmt {
-    Continue(Stmt forIncrement) {
+    Continue(Expr forIncrement) {
       this.forIncrement = forIncrement;
     }
 
@@ -45,7 +45,7 @@ abstract class Stmt {
       return visitor.visitContinueStmt(this);
     }
 
-    final Stmt forIncrement;
+    final Expr forIncrement;
   }
     static class Expression extends Stmt {
     Expression(Expr expression) {

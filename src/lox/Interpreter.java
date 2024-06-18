@@ -5,8 +5,10 @@ import java.util.Optional;
 
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
-    private static class BreakException extends RuntimeException {
-    }
+    private static class BreakException extends RuntimeException {}
+
+    private static class ContinueException extends RuntimeException {}
+
     @Override
     public Void visitBlockStmt(Stmt.Block stmt) {
         executeBlock(stmt.statements, new Environment(environment));
@@ -213,7 +215,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     public Void visitWhileStmt(Stmt.While stmt) {
         try {
             while (isTruthy(evaluate(stmt.condition))) {
-                execute(stmt.body);
+                try {
+                    execute(stmt.body);
+                } catch (ContinueException ex) {
+                    // Do Nothing
+                }
             }
         } catch (BreakException ex) {
             // Do Nothing
@@ -224,6 +230,14 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     @Override
     public Void visitBreakStmt(Stmt.Break stmt) {
         throw new BreakException();
+    }
+
+    @Override
+    public Void visitContinueStmt(Stmt.Continue stmt) {
+        if (stmt.forIncrement != null) {
+            evaluate(stmt.forIncrement);
+        }
+        throw new ContinueException();
     }
 
     @Override
