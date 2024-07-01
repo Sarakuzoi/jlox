@@ -29,6 +29,8 @@ public class GenerateAst {
                 "Break      : ",
                 "Continue   : Expr forIncrement",
                 "Expression : Expr expression",
+                "Function   : Token name, List<Token> params," +
+                        " List<Stmt> body",
                 "If         : Expr condition, Stmt thenBranch," +
                             " Stmt elseBranch",
                 "Print      : Expr expression",

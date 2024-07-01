@@ -7,17 +7,35 @@ import java.util.Optional;
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
     private static class BreakException extends RuntimeException {}
-
     private static class ContinueException extends RuntimeException {}
+    final Environment globals = new Environment();
+    private Environment environment = globals;
+    private boolean repl = false;
+
+    Interpreter() {
+        globals.define("clock", new LoxCallable() {
+            @Override
+            public Object call(Interpreter interpreter, List<Object> arguments) {
+                return (double) System.currentTimeMillis() / 1000.0;
+            }
+
+            @Override
+            public int arity() {
+                return 0;
+            }
+
+            @Override
+            public String toString() {
+                return "<native fn>";
+            }
+        });
+    }
 
     @Override
     public Void visitBlockStmt(Stmt.Block stmt) {
         executeBlock(stmt.statements, new Environment(environment));
         return null;
     }
-
-    private Environment environment = new Environment();
-    private boolean repl = false;
 
     void interpret(List<Stmt> statements) {
         try {
