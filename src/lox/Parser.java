@@ -13,6 +13,7 @@ public class Parser {
     private final List<Token> tokens;
     private int current = 0;
     private Stack<Expr> forIncrement = new Stack<>();
+
     // True if for loop, False if while
     private Stack<Boolean> loopDepth = new Stack<>();
 
