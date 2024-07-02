@@ -82,6 +82,7 @@ public class Parser {
         if (match(IF)) return ifStatement();
         if (match(LEFT_BRACE)) return new Stmt.Block(block());
         if (match(PRINT)) return printStatement();
+        if (match(RETURN)) return returnStatement();
         if (match(WHILE)) return whileStatement();
 
         return expressionStatement();
@@ -173,6 +174,18 @@ public class Parser {
         return new Stmt.Print(value);
     }
 
+    private Stmt returnStatement() {
+        Token keyword = previous();
+        Expr value = null;
+        if (!check(SEMICOLON)) {
+            value = expression();
+        }
+
+        consume(SEMICOLON, "Expect ';' after return value.");
+        return new Stmt.Return(keyword, value);
+    }
+
+
     private Stmt whileStatement() {
         consume(LEFT_PAREN, "Expect '(' after 'while'.");
         Expr condition = expression();
@@ -186,7 +199,6 @@ public class Parser {
         }
 
     }
-
 
     private List<Stmt> block() {
         List<Stmt> statements = new ArrayList<>();
