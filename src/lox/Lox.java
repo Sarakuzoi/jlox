@@ -63,6 +63,9 @@ public class Lox {
         interpreter.interpret(statements, repl);
     }
 
+    static void error(String message) {
+        report(message);
+    }
     static void error(int line, String message) {
         report(line, "", message);
     }
@@ -79,6 +82,12 @@ public class Lox {
         System.err.println(error.getMessage()
                 + "\n[line " + error.token.line + "]");
         hadRuntimeError = true;
+    }
+
+    private static void report(String message) {
+        System.err.println(
+                "Error: " + message);
+        hadError = true;
     }
 
     private static void report(int line, String where,

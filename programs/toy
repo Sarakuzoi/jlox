@@ -1,3 +1,4 @@
+/*
 var a = "global";
 {
   fun showA() {
@@ -7,4 +8,12 @@ var a = "global";
   showA();
   var a = "block";
   showA();
+}
+*/
+
+
+for (var i = 0; i < 10; i = i + 1) {
+    var a = 4;
+    print a;
+    var b;
 }
