@@ -12,8 +12,10 @@ var a = "global";
 */
 
 
+var x;
 for (var i = 0; i < 10; i = i + 1) {
     var a = 4;
     print a;
-    var b;
+    var b = 3;
+    b = 4;
 }
